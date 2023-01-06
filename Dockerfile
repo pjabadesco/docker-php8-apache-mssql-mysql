@@ -4,8 +4,8 @@ RUN a2enmod rewrite headers remoteip
 
 # Install the PHP Driver for SQL Server
 RUN apt-get update -yqq \
-    && apt-get install -y apt-transport-https gnupg \
-    libcurl4-openssl-dev libedit-dev libsqlite3-dev libssl-dev libxml2-dev zlib1g-dev libpng-dev libmcrypt-dev libpng-dev \
+    && apt-get install -y apt-transport-https gnupg wget \
+    libcurl4-openssl-dev libedit-dev libsqlite3-dev libssl-dev libxml2-dev zlib1g-dev libpng-dev libmcrypt-dev libpng-dev libjpeg-dev \
     freetds-dev freetds-bin freetds-common libdbd-freetds libsybdb5 libqt5sql5-tds libzip-dev zip unzip \
     && ln -s /usr/lib/x86_64-linux-gnu/libsybdb.so /usr/lib/libsybdb.so \
     && ln -s /usr/lib/x86_64-linux-gnu/libsybdb.a /usr/lib/libsybdb.a \
@@ -33,9 +33,9 @@ RUN pecl install mongodb \
 #     RUN docker-php-ext-install gd pdo pdo_mysql pdo_odbc pdo_dblib curl mysqli opcache zip redis
 
 # RUN docker-php-ext-install gd pdo pdo_mysql pdo_dblib 
-RUN docker-php-ext-install gd pdo pdo_mysql pdo_dblib curl
+RUN docker-php-ext-configure gd --enable-gd --with-jpeg
 RUN docker-php-ext-configure pdo_odbc --with-pdo-odbc=unixODBC,/usr 
-RUN docker-php-ext-install mysqli pdo_odbc opcache zip 
+RUN docker-php-ext-install gd pdo pdo_mysql pdo_dblib curl mysqli pdo_odbc opcache zip 
 RUN docker-php-ext-enable redis
 
 COPY conf/php.ini /usr/local/etc/php/
