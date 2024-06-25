@@ -1,8 +1,10 @@
-FROM php:8.1-apache-buster
+FROM php:8.2-apache-bookworm
 
 RUN a2enmod rewrite headers remoteip
 
+# RUN apt-get update -yqq 
 # Install the PHP Driver for SQL Server
+# RUN apt-get install gnupg && apt-key update
 RUN apt-get update -yqq \
     && apt-get install -y apt-transport-https gnupg wget \
     libcurl4-openssl-dev libedit-dev libsqlite3-dev libssl-dev libxml2-dev zlib1g-dev libpng-dev libmcrypt-dev libpng-dev libjpeg-dev \
@@ -38,6 +40,10 @@ RUN docker-php-ext-configure pdo_odbc --with-pdo-odbc=unixODBC,/usr
 RUN docker-php-ext-install gd pdo pdo_mysql pdo_dblib curl mysqli pdo_odbc opcache zip 
 RUN docker-php-ext-enable redis
 
+RUN apt-get install -y libpq-dev \
+    && docker-php-ext-install pdo_pgsql
+
+    
 COPY conf/php.ini /usr/local/etc/php/
 COPY conf/httpd.conf /etc/apache2/sites-available/000-default.conf
 COPY www/ /var/www/html/
